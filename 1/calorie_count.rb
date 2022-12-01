@@ -14,7 +14,7 @@ class CalorieCount
   
   def sum_top_three
     # part 2
-    elves.map(&:sum).sort.last(3).sum
+    elves.map(&:sum).max(3).sum
   end
 end
 
