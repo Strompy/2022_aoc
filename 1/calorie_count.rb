@@ -1,10 +1,3 @@
-# FIND THE ELF CARRYING THE MOST CALORIES FROM
-
-# Parse the input
-# blank line seperates the elves from the
-# sum the totals between the lines breaks, for each elf
-# return the elf with the largest total
-
 class CalorieCount
   attr_reader :elves
   
@@ -25,11 +18,9 @@ class CalorieCount
   end
 end
 
-
 # Part 1
 counter = CalorieCount.new('input.txt')
 puts "Part 1 answer: #{counter.find_most_calories}"
 
 # Part 2
 puts "Part 2 answer: #{counter.sum_top_three}"
-
