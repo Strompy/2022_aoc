@@ -18,11 +18,18 @@ class CalorieCount
     # part 1
     elves.map(&:sum).max
   end
+  
+  def sum_top_three
+    # part 2
+    elves.map(&:sum).sort.last(3).sum
+  end
 end
 
+
 # Part 1
-# puts CalorieCount.new('input.txt').find_most_calories
+counter = CalorieCount.new('input.txt')
+puts "Part 1 answer: #{counter.find_most_calories}"
 
 # Part 2
-# puts CalorieCount.new('input.txt')
+puts "Part 2 answer: #{counter.sum_top_three}"
 

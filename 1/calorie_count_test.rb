@@ -12,4 +12,9 @@ class CalorieCountTest < Minitest::Test
     counter = CalorieCount.new('test_input.txt')
     assert_equal 24000, counter.find_most_calories
   end
+  
+  def test_it_can_sum_top_three
+    counter = CalorieCount.new('test_input.txt')
+    assert_equal 45000, counter.sum_top_three
+  end
 end
