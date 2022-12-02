@@ -53,6 +53,30 @@ class RockPaperScissors
     GRID[opponent_num][your_num]
   end
   
+  def play_guessing_tourney
+    until current_round >= rounds.size
+      opponent_move, result_letter = rounds[current_round].split(" ")
+      your_move = pick_move_by_result(opponent_move, result_letter)
+      result = RESULTS[result_letter]
+      @current_round += 1
+      @total_score += PLAY_POINTS[your_move] + ROUND_POINTS[result]
+    end
+    total_score
+  end
+  
+  def pick_move_by_result(opponent_move, result_letter)
+    row = GRID_COORDS[opponent_move]
+    result = RESULTS[result_letter]
+    your_move_num = GRID[row].find_index(result)
+    GRID_COORDS.key(your_move_num)
+  end
+  
+  RESULTS = {
+    'X' => 'lose',
+    'Y' => 'draw',
+    'Z' => 'win'
+  }
+  
   GRID = [
     ['draw','win', 'lose'],
     ['lose','draw', 'win'],
@@ -60,12 +84,12 @@ class RockPaperScissors
   ]
   
   GRID_COORDS = {
+    'X' => 0,
+    'Y' => 1,
+    'Z' => 2,
     'A' => 0,
     'B' => 1,
     'C' => 2,
-    'X' => 0,
-    'Y' => 1,
-    'Z' => 2
   }
   
   ROUND_POINTS = {

@@ -36,8 +36,24 @@ class RockPaperScissorsTest < MiniTest::Test
     rps = RockPaperScissors.new('test_input.txt')
     assert_equal 15, rps.run_tourney
   end
+  
+  def test_it_can_pick_move_by_result
+    rps = RockPaperScissors.new('test_input.txt')
+    assert_equal 'X', rps.pick_move_by_result('A', 'Y')
+    assert_equal 'X', rps.pick_move_by_result('B', 'X')
+    assert_equal 'X', rps.pick_move_by_result('C', 'Z')
+  end
+  
+  def test_it_can_play_guessing_tourney
+    rps = RockPaperScissors.new('test_input.txt')
+    assert_equal 12, rps.play_guessing_tourney
+  end
 end
 
+# Part 1
 rps = RockPaperScissors.new('input.txt')
-puts "Part 1 Solution: "
-puts rps.run_tourney
+puts "Part 1 Solution: #{rps.run_tourney}"
+
+# Part 2
+rps = RockPaperScissors.new('input.txt')
+puts "Part 2 Solution: #{rps.play_guessing_tourney}"
