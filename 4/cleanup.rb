@@ -9,14 +9,14 @@ class Cleanup
     first, second = pair.split(',')
     start_1, end_1 = first.split('-')
     start_2, end_2 = second.split('-')
-    first_contains_second(start_1, end_1, start_2, end_2) || second_contains_first(start_1, end_1, start_2, end_2)
+    first_contains_second?(start_1, end_1, start_2, end_2) || second_contains_first?(start_1, end_1, start_2, end_2)
   end
   
-  def first_contains_second(start_1, end_1, start_2, end_2)
+  def first_contains_second?(start_1, end_1, start_2, end_2)
     start_1 <= start_2 && end_1 >= end_2
   end
   
-  def second_contains_first(start_1, end_1, start_2, end_2)
+  def second_contains_first?(start_1, end_1, start_2, end_2)
     start_2 <= start_1 && end_2 >= end_1
   end
   
