@@ -44,9 +44,19 @@ class SupplyStacks
     end
   end
   
-  def execute_directions!
+  def move_stack(direction)
+    num_of_crates, from, to = direction.map(&:to_i)
+    crates = @stacks[from - 1].pop(num_of_crates)
+    @stacks[to - 1].push(crates).flatten!
+  end
+  
+  def execute_directions!(move_stacks = false)
     directions.each do |direction|
-      move_crate(direction)
+      if move_stacks
+        move_stack(direction)
+      else 
+        move_crate(direction)
+      end
     end
   end
   

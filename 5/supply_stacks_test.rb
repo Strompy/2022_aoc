@@ -30,9 +30,33 @@ class SupplyStacksTest < Minitest::Test
     supply.execute_directions!
     assert_equal 'CMZ', supply.return_message
   end
+  
+  def test_it_can_move_stack
+    supply = SupplyStacks.new('test_input.txt')
+    supply.move_stack(supply.directions[0])
+    assert_equal ['Z', 'N', 'D'], supply.stacks[0]
+    assert_equal ['M', 'C'], supply.stacks[1]
+    assert_equal ['P'], supply.stacks[2]
+    
+    supply.move_stack(supply.directions[1])
+    assert_equal [], supply.stacks[0]
+    assert_equal ['M', 'C'], supply.stacks[1]
+    assert_equal ['P', 'Z', 'N', 'D'], supply.stacks[2]
+  end
+  
+  def test_it_can_execute_directions_and_return_message
+    supply = SupplyStacks.new('test_input.txt')
+    supply.execute_directions!(true)
+    assert_equal 'MCD', supply.return_message
+  end
 end
 
 # Solve Part 1: 
 supply = SupplyStacks.new('input.txt')
 supply.execute_directions!
 puts "Part 1 Solution: #{supply.return_message}"
+
+# Solve Part 1: 
+supply = SupplyStacks.new('input.txt')
+supply.execute_directions!(true)
+puts "Part 2 Solution: #{supply.return_message}"
