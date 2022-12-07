@@ -24,13 +24,34 @@ class FileSysTest < Minitest::Test
   end
   
   def test_it_can_parse_file_structure
-    skip
     sys = FileSys.new('test_input.txt')
     assert_equal '/', sys.current_dir
     sys.parse_file_structure
-    # require "pry"; binding.pry
     assert_equal ['/'], sys.files.keys
-    assert_equal ['a', 'd'].sort, sys.files['/'].keys.sort
-    assert_equal ['e'].sort, sys.files['/']['a'].keys.sort
+    assert_equal [:txts, 'a', 'd',], sys.files['/'].keys
+    assert_equal [:txts, 'e',], sys.files['/']['a'].keys
+  end
+  
+  def test_it_can_create_plain_data
+    sys = FileSys.new('test_input.txt')
+    sys.parse_file_structure
+    assert_equal '584', sys.files['/']['a']['e'][:txts][0].size
+    assert_equal 'i', sys.files['/']['a']['e'][:txts][0].name
+    
+    assert_equal '29116', sys.files['/']['a'][:txts][0].size
+    assert_equal 'f', sys.files['/']['a'][:txts][0].name
+    assert_equal '2557', sys.files['/']['a'][:txts][1].size
+    assert_equal 'g', sys.files['/']['a'][:txts][1].name
+    assert_equal '62596', sys.files['/']['a'][:txts][2].size
+    assert_equal 'h.lst', sys.files['/']['a'][:txts][2].name
+    
+    assert_equal '4060174', sys.files['/']['d'][:txts][0].size
+    assert_equal 'j', sys.files['/']['d'][:txts][0].name
+    assert_equal '8033020', sys.files['/']['d'][:txts][1].size
+    assert_equal 'd.log', sys.files['/']['d'][:txts][1].name
+    assert_equal '5626152', sys.files['/']['d'][:txts][2].size
+    assert_equal 'd.ext', sys.files['/']['d'][:txts][2].name
+    assert_equal '7214296', sys.files['/']['d'][:txts][3].size
+    assert_equal 'k', sys.files['/']['d'][:txts][3].name
   end
 end

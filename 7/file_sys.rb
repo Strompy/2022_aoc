@@ -1,12 +1,12 @@
 require_relative './plain_data'
 
 class FileSys
+  DEAFULT_HASH = Hash.new { |h, k| h[k] = {} }
   attr_reader :lines, :files, :current_dir, :previous_dir
   
   def initialize(input)
     @lines = IO.readlines(input, chomp: true)
-    # @files = { files: [] }
-    @files = { '/' => {} }
+    @files = { '/' => { txts: [] } }
     @current_dir = '/'
     @previous_dir = []
   end
@@ -16,23 +16,20 @@ class FileSys
       next if index == 0
       
       parts = line.split(' ')
-      # if $ then run command
       if parts[0] == '$'
-        # require "pry"; binding.pry
-        # cd then change current_dir 
         change_current_directory(parts[2]) if parts[1] == 'cd' 
         # if ls then skip i guess, not sure I need it with this approach
-      # elsif dir then create new hash key
       elsif parts[0] == 'dir'
-        # files[current_dir][char] = { files: [] }
-        
-      # elseif num then create new file
+        keys = [previous_dir, current_dir, parts[1]].flatten
+        existing_directory = files.dig(keys)
+        deep_set(files, keys, { txts: [] }) if !existing_directory
       elsif parts[0].to_i.to_s == parts[0]
-        # files[current_dir][:files] << File.new
+        keys = [previous_dir, current_dir].flatten
+        plain_data = PlainData.new(*parts)
+        deep_set_files(files, keys, plain_data)
       end
     end
   end
-
   
   def change_current_directory(new_dir)
     if new_dir == '..'
@@ -43,6 +40,18 @@ class FileSys
       @previous_dir.push(current_dir)
       @current_dir = new_dir
     end
+  end
+  
+  def deep_set(file_structure, keys, value)
+    keys[0...-1].inject(file_structure) do |acc, h|
+      acc.public_send(:[], h)
+    end.public_send(:[]=, keys.last, value)
+  end
+  
+  def deep_set_files(file_structure, keys, value)
+    keys[0...-1].inject(file_structure) do |acc, h|
+      acc.public_send(:[], h)
+    end.public_send(:[], keys.last)[:txts] << value
   end
 end
 
