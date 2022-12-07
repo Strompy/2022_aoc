@@ -5,12 +5,21 @@ class Tuning
     @stream = stream ||IO.read(input).chomp
   end
   
-  def find_start_of_stream_packet
+  def find_start_of_stream
     chars = []
     stream.chars.each_with_index do |char, index|
       chars << char
       next if index < 3
       return (index + 1) if chars.last(4) == chars.last(4).uniq
+    end
+  end
+  
+  def find_start_of_message
+    chars = []
+    stream.chars.each_with_index do |char, index|
+      chars << char
+      next if index < 13
+      return (index + 1) if chars.last(14) == chars.last(14).uniq
     end
   end
 end
