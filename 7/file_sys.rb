@@ -1,14 +1,17 @@
 require_relative './plain_data'
 
 class FileSys
-  DEAFULT_HASH = Hash.new { |h, k| h[k] = {} }
-  attr_reader :lines, :files, :current_dir, :previous_dir
+  DEAFULT_HASH = Hash.new { |h, k| h[k] = 0 }
+  MAX_DIR_SIZE = 100_000
+  
+  attr_reader :lines, :files, :current_dir, :previous_dir, :file_size_by_dir
   
   def initialize(input)
     @lines = IO.readlines(input, chomp: true)
-    @files = { '/' => { txts: [] } }
+    @files = { '/' => { txts: [], total_size: 0 } }
     @current_dir = '/'
     @previous_dir = []
+    @file_size_by_dir = Hash.new { |h, k| h[k] = 0 }
   end
   
   def parse_file_structure
@@ -22,7 +25,7 @@ class FileSys
       elsif parts[0] == 'dir'
         keys = [previous_dir, current_dir, parts[1]].flatten
         existing_directory = files.dig(keys)
-        deep_set(files, keys, { txts: [] }) if !existing_directory
+        deep_set(files, keys, { txts: [], total_size: 0 }) if !existing_directory
       elsif parts[0].to_i.to_s == parts[0]
         keys = [previous_dir, current_dir].flatten
         plain_data = PlainData.new(*parts)
@@ -53,7 +56,45 @@ class FileSys
       acc.public_send(:[], h)
     end.public_send(:[], keys.last)[:txts] << value
   end
+  
+  def deep_set_total_size(file_structure, keys, value)
+    @file_size_by_dir[keys.last] += value
+    keys[0...-1].inject(file_structure) do |acc, h|
+      acc.public_send(:[], h)
+    end.public_send(:[], keys.last)[:total_size] += value
+  end
+  
+  def calculate_sizes(dirs, recursive_dirs = [])
+    sum = 0
+    dirs.each do |directory|
+      parent = directory[0]
+      children = directory[1]
+      if children.is_a?(Array)
+        sum += children.sum(&:file_size)
+      elsif children.is_a?(Hash)
+        recursive_dirs << parent
+        child_size = calculate_sizes(children.except(:total_size), recursive_dirs)
+        next if child_size.is_a?(Hash)
+        
+        deep_set_total_size(files, recursive_dirs, child_size)
+        recursive_dirs.pop
+        sum += child_size
+      end
+    end
+    sum
+  end
+  
+  def solve_part_1
+    small_dirs = file_size_by_dir.select do |dir, size|
+      size <= 100000
+    end
+    require "pry"; binding.pry
+    small_dirs.values.sum
+  end
 end
+
+# FIND ALL DIRECTORIES WITH A SIZE SMALLER THAN 100_000
+# THEN SUM THE SIZES OF THOSE DIRECTORIES
 
 # input is a bunch of terminal commands and outputs
 # lines starting with $ are commands
